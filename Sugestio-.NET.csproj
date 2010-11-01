@@ -45,7 +45,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Consumption.cs" />
     <Compile Include="Example.cs" />
+    <Compile Include="ISugestioObject.cs" />
     <Compile Include="Recommendation.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -26,6 +26,7 @@
 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Net;
@@ -43,7 +44,7 @@ namespace Sugestio
         private string account;
         private string secret;
 
-        private static readonly String baseUri = "http://api.sugestio.com/sites/";
+        private static readonly String baseUrl = "http://api.sugestio.com/sites/";
         private OAuthConsumerContext consumerContext;
         private OAuthSession session;
 
@@ -57,10 +58,10 @@ namespace Sugestio
         {
             this.account = account;
             this.secret = secret;
-            init();
+            Init();
         }
 
-        private void init()
+        private void Init()
         {
             this.consumerContext = new OAuthConsumerContext
             {
@@ -75,17 +76,25 @@ namespace Sugestio
                 "http://api.sugestio.com");
         }
 
-        public List<Recommendation> getRecommendations(string userId)
+        public List<Recommendation> GetRecommendations(string userId)
         {
-            return getRecommendedItems("recommendations", userId);
+            return GetRecommendedItems("recommendations", userId);
         }
 
-        public List<Recommendation> getSimilar(string itemId)
+        public List<Recommendation> GetSimilar(string itemId)
         {
-            return getRecommendedItems("similar", itemId);
+            return GetRecommendedItems("similar", itemId);
         }
 
-        private List<Recommendation> getRecommendedItems(string type, string id)
+        public int Add(ISugestioObject sugestioObject)
+        {
+            string url = GetUrl(sugestioObject.GetResource());            
+            var request = session.Request().Post().ForUrl(url);
+            request.WithFormParameters(sugestioObject.ToDictionary());
+            return Post(request);
+        }        
+
+        private List<Recommendation> GetRecommendedItems(string type, string id)
         {
 
             List<Recommendation> recommendations = new List<Recommendation>();
@@ -93,16 +102,16 @@ namespace Sugestio
 
             if (type.Equals("recommendations"))
             {
-                url = getUri("/users/" + id + "/recommendations.xml");
+                url = GetUrl("/users/" + id + "/recommendations.xml");
             }
             else if (type.Equals("similar")) 
             {
-                url = getUri("/items/" + id + "/similar.xml");
+                url = GetUrl("/items/" + id + "/similar.xml");
             }
 
             var request = session.Request().Get().ForUrl(url);
 
-            XDocument loaded = doGet(request);
+            XDocument loaded = Get(request);
 
             if (loaded != null)
             {
@@ -128,7 +137,29 @@ namespace Sugestio
 
         }
 
-        private XDocument doGet(IConsumerRequest request)
+        private int Post(IConsumerRequest request)
+        {
+            try
+            {
+                HttpWebResponse response = (HttpWebResponse)request.ToWebResponse();
+                return Convert.ToInt32(response.StatusCode);
+            }
+            catch (WebException ex)
+            {
+                if (ex.Status == WebExceptionStatus.ProtocolError)
+                {
+                    HttpWebResponse response = (HttpWebResponse)ex.Response;
+                    return Convert.ToInt32(response.StatusCode); 
+                }
+                else
+                {
+                    Console.Write(ex.Message);
+                    return 0;
+                }
+            }
+        }
+
+        private XDocument Get(IConsumerRequest request)
         {
 
             try
@@ -160,9 +191,9 @@ namespace Sugestio
 
         }
 
-        private string getUri(string resource)
+        private string GetUrl(string resource)
         {
-            return baseUri + account + resource;
+            return baseUrl + account + resource;
         } 
 
     }

@@ -36,17 +36,39 @@ namespace Sugestio
     {
         static void Main(string[] args)
         {
-
-            Client client = new Client("sandbox", "demo");
-            List<Recommendation> recommendations = client.getSimilar("1");
-            Console.WriteLine("Call complete, " + recommendations.Count + " recommendations.");
-            recommendations.ForEach(print);
+            //GetRecommendations();            
+            //GetSimilarItems();
+            //AddConsumption();
             Console.ReadLine();
         }
 
-        static void print(Recommendation r)
+        static void GetRecommendations()
         {
-            Console.WriteLine("Item: " + r.ItemId);
+            Client client = new Client("sandbox", "demo");
+            List<Recommendation> recommendations = client.GetRecommendations("1");
+            Console.WriteLine("Call complete, " + recommendations.Count + " recommendations.");
+            recommendations.ForEach(Print);
+        }
+
+        static void GetSimilarItems()
+        {
+            Client client = new Client("sandbox", "demo");
+            List<Recommendation> similarItems = client.GetSimilar("1");
+            Console.WriteLine("Call complete, " + similarItems.Count + " similar items.");
+            similarItems.ForEach(Print);
+        }
+
+        static void AddConsumption()
+        {
+            Client client = new Client("sandbox", "demo");
+            Consumption consumption = new Consumption("123", "ABCD");
+            int response = client.Add(consumption);
+            Console.WriteLine("Call complete, status code: " + response);            
+        }
+
+        static void Print(Recommendation r)
+        {
+            Console.WriteLine("Item " + r.ItemId);
         }
     }
 }
