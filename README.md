@@ -1,8 +1,8 @@
 ﻿# Overview
 
-This is a C# library for interfacing with the [Sugestio](http://www.sugestio.com) 
+This is a .NET library for interfacing with the [Sugestio](http://www.sugestio.com) 
 recommendation service. Data is submitted as XML. The library uses 
-[DevDefined.OAuth](http://github.com/bittercoder/DevDefined.OAuth) to create the OAuth-signed requests. 
+[DevDefined.OAuth](http://github.com/bittercoder/DevDefined.OAuth) to create the OAuth-signed requests. Written in C# for .NET Framework 3.5.
 
 ## About Sugestio
 
