@@ -38,8 +38,8 @@ The following [API](http://www.sugestio.com/documentation) features are implemen
 
 ### Requirements
 
-.NET Framework 3.5 or newer
-foretagsplatsen's [fork](http://github.com/foretagsplatsen/DevDefined.OAuth) of DevDefined.OAuth until their changes get merged
+* .NET Framework 3.5 or newer
+* foretagsplatsen's [fork](http://github.com/foretagsplatsen/DevDefined.OAuth) of DevDefined.OAuth until their changes get merged
 
 # Tutorial and sample code
 
