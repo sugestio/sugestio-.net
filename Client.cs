@@ -48,12 +48,20 @@ namespace Sugestio
         private OAuthConsumerContext consumerContext;
         private OAuthSession session;
 
+        /// <summary>
+        /// Creates an instance of the Sugestio client with the default (Sandbox) credentials
+        /// </summary>
         public Client() 
             : this("sandbox", "demo") 
         {
             
         }
 
+        /// <summary>
+        /// Creates an instance of the Sugestio client with the given access credentials
+        /// </summary>
+        /// <param name="account">account name</param>
+        /// <param name="secret">secret key</param>
         public Client(string account, string secret)
         {
             this.account = account;
@@ -61,6 +69,10 @@ namespace Sugestio
             Init();
         }
 
+        /// <summary>
+        /// Initializes an OAuth session object which will be reused for all
+        /// subsequent service calls
+        /// </summary>
         private void Init()
         {
             this.consumerContext = new OAuthConsumerContext
@@ -76,16 +88,31 @@ namespace Sugestio
                 "http://api.sugestio.com");
         }
 
+        /// <summary>
+        /// Gets personal recommendations for the given user.
+        /// </summary>
+        /// <param name="userId">id of the user</param>
+        /// <returns>list of recommendations</returns>
         public List<Recommendation> GetRecommendations(string userId)
         {
             return GetRecommendedItems("recommendations", userId);
         }
 
+        /// <summary>
+        /// Gets items that are similar to the given item.
+        /// </summary>
+        /// <param name="itemId">id of the item</param>
+        /// <returns>list of similar items</returns>
         public List<Recommendation> GetSimilar(string itemId)
         {
             return GetRecommendedItems("similar", itemId);
         }
 
+        /// <summary>
+        /// Adds a consumption, a user or an item
+        /// </summary>
+        /// <param name="sugestioObject">the entity to add</param>
+        /// <returns>HTTP status code</returns>
         public int Add(ISugestioObject sugestioObject)
         {
             string url = GetUrl(sugestioObject.GetResource());            
@@ -94,6 +121,13 @@ namespace Sugestio
             return Post(request);
         }        
 
+        /// <summary>
+        /// Performs a GET request for recommendations or similar items and
+        /// turns the XML response body into a list of recommendations.
+        /// </summary>
+        /// <param name="type">type of resource to get ("recommendations" or "similar")</param>
+        /// <param name="id">id of the user or item</param>
+        /// <returns>list of recommendations or similar items</returns>
         private List<Recommendation> GetRecommendedItems(string type, string id)
         {
 
@@ -137,6 +171,15 @@ namespace Sugestio
 
         }
 
+        /// <summary>
+        /// Performs a POST request and returns the HTTP status code of the response.
+        /// 202: Accepted
+        /// 400: Bad Request
+        /// 401: Unauthorized
+        /// 500: Internal Server Error
+        /// </summary>
+        /// <param name="request">the request</param>
+        /// <returns>HTTP Status Code</returns>
         private int Post(IConsumerRequest request)
         {
             try
@@ -159,6 +202,12 @@ namespace Sugestio
             }
         }
 
+        /// <summary>
+        /// Performs the GET request and returns the XDocument from the response body.
+        /// If there was a problem (HTTP Status Code >= 400), null is returned.
+        /// </summary>
+        /// <param name="request">the request</param>
+        /// <returns>XDocument from response body or null</returns>
         private XDocument Get(IConsumerRequest request)
         {
 
@@ -191,6 +240,11 @@ namespace Sugestio
 
         }
 
+        /// <summary>
+        /// Builds the full URL for the resource.
+        /// </summary>
+        /// <param name="resource"></param>
+        /// <returns></returns>
         private string GetUrl(string resource)
         {
             return baseUrl + account + resource;
