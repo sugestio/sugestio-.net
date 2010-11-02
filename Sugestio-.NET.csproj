@@ -36,7 +36,8 @@
     </StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevDefined.OAuth">
+    <Reference Include="DevDefined.OAuth, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a3261f5b4697e67d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>libs\DevDefined.OAuth.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -53,7 +54,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>

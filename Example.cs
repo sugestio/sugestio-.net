@@ -63,7 +63,7 @@ namespace Sugestio
             Client client = new Client("sandbox", "demo");
             Consumption consumption = new Consumption("123", "ABCD");
             int response = client.Add(consumption);
-            Console.WriteLine("Call complete, status code: " + response);            
+            Console.WriteLine("Call complete, status code: " + response);                        
         }
 
         static void Print(Recommendation r)

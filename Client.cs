@@ -32,6 +32,7 @@ using System.Text;
 using System.Net;
 using System.Linq;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 using DevDefined.OAuth;
 using DevDefined.OAuth.Consumer;
@@ -81,7 +82,7 @@ namespace Sugestio
                 SignatureMethod = SignatureMethod.HmacSha1,
                 ConsumerSecret = secret
             };
-
+            
             this.session = new OAuthSession(consumerContext, 
                 "http://api.sugestio.com", 
                 "http://api.sugestio.com", 
@@ -115,9 +116,20 @@ namespace Sugestio
         /// <returns>HTTP status code</returns>
         public int Add(ISugestioObject sugestioObject)
         {
-            string url = GetUrl(sugestioObject.GetResource());            
+            string url = GetUrl(sugestioObject.GetResource());
             var request = session.Request().Post().ForUrl(url);
-            request.WithFormParameters(sugestioObject.ToDictionary());
+            //request.WithFormParameters(sugestioObject.ToDictionary());
+            //send data as XML using foretagsplatsen's fork (see OAuthRestClient.cs)
+            var serializer = new XmlSerializer(sugestioObject.GetType());
+            var sw = new System.IO.StringWriter();                
+            serializer.Serialize(sw, sugestioObject);
+            string body = sw.ToString();
+            
+            request.AlterContext(context => context.UseQueryParametersForOAuth = true);
+            request.AlterHttpWebRequest(httpRequest => httpRequest.ContentType = "text/xml");
+            request.ConsumerContext.EncodeRequestBody = false;
+            request.WithBody(body);
+            //Console.WriteLine(body);                                                          
             return Post(request);
         }        
 

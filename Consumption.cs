@@ -27,15 +27,17 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Xml.Serialization;
 using System.Linq;
 using System.Text;
 
 namespace Sugestio
 {
+    [XmlRoot("consumption")]
     public class Consumption : ISugestioObject
     {       
         private string userId = null;
-
+        [XmlElement("userid")]
         public string UserId
         {
             get { return userId; }
@@ -43,15 +45,15 @@ namespace Sugestio
         }
 
         private string itemId = null;
-
+        [XmlElement("itemid")]
         public string ItemId
         {
             get { return itemId; }
             set { itemId = value; }
         }
-
+        
         private string type = null;
-
+        [XmlElement("type")]
         public string Type
         {
             get { return type; }
@@ -59,7 +61,7 @@ namespace Sugestio
         }
 
         private string detail = null;
-
+        [XmlElement("detail")]
         public string Detail
         {
             get { return detail; }
@@ -67,11 +69,15 @@ namespace Sugestio
         }
 
         private string date = "NOW";
-
+        [XmlElement("date")]
         public string Date
         {
             get { return date; }
             set { date = value; }
+        }
+
+        public Consumption()
+        {
         }
 
         public Consumption(string userId, string itemId) 
@@ -92,7 +98,7 @@ namespace Sugestio
         {
             return "/consumptions";
         }
-
+        
         public IDictionary ToDictionary()
         {
 
