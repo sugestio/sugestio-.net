@@ -32,8 +32,7 @@ using System.Text;
 namespace Sugestio
 {
     public interface ISugestioObject
-    {
-        IDictionary ToDictionary();
+    {        
         string GetResource();
     }
 }

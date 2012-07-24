@@ -134,8 +134,7 @@ namespace Sugestio
         public int Add(ISugestioObject sugestioObject)
         {
             string url = GetUrl(sugestioObject.GetResource());
-            var request = session.Request().Post().ForUrl(url);
-            //request.WithFormParameters(sugestioObject.ToDictionary());
+            var request = session.Request().Post().ForUrl(url);            
             //send data as XML using foretagsplatsen's fork (see OAuthRestClient.cs)
             var serializer = new XmlSerializer(sugestioObject.GetType());
             var sw = new System.IO.StringWriter();                

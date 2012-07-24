@@ -25,8 +25,6 @@
 #endregion
 
 using System;
-using System.Collections;
-using System.Collections.Specialized;
 using System.Xml.Serialization;
 using System.Linq;
 using System.Text;
@@ -124,23 +122,5 @@ namespace Sugestio
             return "/consumptions.xml";
         }
         
-        public IDictionary ToDictionary()
-        {
-
-            var dictionary = new ListDictionary();            
-            dictionary.Add("userid", userId);
-            dictionary.Add("itemid", itemId);
-
-            if (type != null)
-                dictionary.Add("type", type);
-
-            if (detail != null)
-                dictionary.Add("detail", detail);
-
-            if (date != null)
-                dictionary.Add("date", date);
-
-            return dictionary;
-        }
     }
 }
