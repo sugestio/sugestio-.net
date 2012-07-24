@@ -104,7 +104,7 @@ non-scalar (category, creator) attributes.
 
 	using Sugestio;
 
-	static void AddConsumption()
+	static void AddItem()
     {
 		Client client = new Client("sandbox", "demo", true); // account, secret, use debug endpoint
         Item item = new Item("X"); // itemid is required
