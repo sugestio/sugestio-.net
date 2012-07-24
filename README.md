@@ -43,7 +43,9 @@ The following [API](http://www.sugestio.com/documentation) features are implemen
 
 # Tutorial and sample code
 
-<code>Example.cs</code> contains sample code that illustrates how you can use the library.
+<code>SugestioDemo/Program.cs</code> contains more sample code that illustrates how you can use the library.
+
+## Getting recommendations
 The following example gets personal recommendations for user 1:
 
 ### Code
@@ -52,7 +54,7 @@ The following example gets personal recommendations for user 1:
 
 	static void GetRecommendations()
 	{
-		Client client = new Client("sandbox", "demo");
+		Client client = new Client("sandbox", "demo"); // account, secret
         List<Recommendation> recommendations = client.GetRecommendations("1");
         Console.WriteLine("Call complete, " + recommendations.Count + " recommendations.");
         recommendations.ForEach(Print);
@@ -71,3 +73,24 @@ The following example gets personal recommendations for user 1:
 	Item 3
 	Item 4
 	Item 5	
+
+## Submitting consumptions
+This example submits a consumption to the debug endpoint. We also set the consumption id to a specific value rather than 
+having Sugestio auto-generate a UUID identifier for us.
+
+### Code
+
+	using Sugestio;
+
+	static void AddConsumption()
+    {
+		Client client = new Client("sandbox", "demo", true); // account, secret, use debug endpoint
+        Consumption consumption = new Consumption("123", "ABCD"); // userid, itemid
+        consumption.Id = "X";
+        int response = client.Add(consumption);
+        Console.WriteLine("Call complete, status code: " + response);
+    }
+
+### Response
+
+	Call complete, status code: 202
