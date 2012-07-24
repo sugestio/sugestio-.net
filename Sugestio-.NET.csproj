@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Consumption.cs" />
     <Compile Include="ISugestioObject.cs" />
+    <Compile Include="Item.cs" />
     <Compile Include="Recommendation.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

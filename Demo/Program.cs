@@ -11,10 +11,14 @@ namespace Demo
         {
             //GetRecommendations();
             //GetSimilarItems();
-            AddConsumption();
+            //AddConsumption();
+            //AddItem();
             Console.ReadLine();
         }
 
+        /// <summary>
+        /// Gets personal recommendations for a given user
+        /// </summary>
         static void GetRecommendations()
         {
             Client client = new Client("sandbox", "demo");
@@ -23,6 +27,9 @@ namespace Demo
             recommendations.ForEach(Print);
         }
 
+        /// <summary>
+        /// Gets items that are similar to a given item
+        /// </summary>
         static void GetSimilarItems()
         {
             Client client = new Client("sandbox", "demo");
@@ -40,6 +47,21 @@ namespace Demo
             Consumption consumption = new Consumption("123", "ABCD");
             consumption.Id = "IDX";
             int response = client.Add(consumption);
+            Console.WriteLine("Call complete, status code: " + response);
+        }
+
+        /// <summary>
+        /// Posts item metadata to the debug endpoint
+        /// </summary>
+        static void AddItem()
+        {
+            Client client = new Client("sandbox", "demo", true);
+            Item item = new Item("X");
+            item.Title = "Item X";            
+            item.Categories.Add("Category A");
+            item.Categories.Add("Category B");
+            item.Creators.Add("Artist A");
+            int response = client.Add(item);
             Console.WriteLine("Call complete, status code: " + response);
         }
 

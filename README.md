@@ -35,6 +35,7 @@ The following [API](http://www.sugestio.com/documentation) features are implemen
 * get personalized recommendations for a given user
 * get items that are similar to a given item
 * submit user activity (consumptions): clicks, purchases, ratings, ...
+* submit item metadata: description, location, tags, categories, ...
 
 ### Requirements
 
@@ -85,9 +86,33 @@ having Sugestio auto-generate a UUID identifier for us.
 	static void AddConsumption()
     {
 		Client client = new Client("sandbox", "demo", true); // account, secret, use debug endpoint
-        Consumption consumption = new Consumption("123", "ABCD"); // userid, itemid
-        consumption.Id = "X";
+        Consumption consumption = new Consumption("123", "ABCD"); // userid and itemid are required
+        consumption.Id = "X"; // optional, a UUID will be assigned if not set manually
         int response = client.Add(consumption);
+        Console.WriteLine("Call complete, status code: " + response);
+    }
+
+### Response
+
+	Call complete, status code: 202
+
+## Submitting item metadata
+This example illustrates how to submit item metadata. Values are assigned to both scalar (title) and 
+non-scalar (category, creator) attributes.
+
+### Code
+
+	using Sugestio;
+
+	static void AddConsumption()
+    {
+		Client client = new Client("sandbox", "demo", true); // account, secret, use debug endpoint
+        Item item = new Item("X"); // itemid is required
+        item.Title = "Item X";            
+        item.Categories.Add("Category A");
+        item.Categories.Add("Category B");
+        item.Creators.Add("Artist A");
+        int response = client.Add(item);
         Console.WriteLine("Call complete, status code: " + response);
     }
 
