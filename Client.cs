@@ -45,6 +45,9 @@ namespace Sugestio
         private string account;
         private string secret;
 
+        private Boolean debug = false;
+
+        private static readonly String debugUrl = "http://debug.sugestio.com/sites/";
         private static readonly String baseUrl = "http://api.sugestio.com/sites/";
         private OAuthConsumerContext consumerContext;
         private OAuthSession session;
@@ -61,14 +64,28 @@ namespace Sugestio
         /// <summary>
         /// Creates an instance of the Sugestio client with the given access credentials
         /// </summary>
-        /// <param name="account">account name</param>
-        /// <param name="secret">secret key</param>
-        public Client(string account, string secret)
+        /// <param name="account">your account name</param>
+        /// <param name="secret">your secret key</param>
+        public Client(string account, string secret) 
+            : this(account, secret, false)
+        {
+            
+        }
+
+        /// <summary>
+        /// Creates an instance of the Sugestio client with the given access credentials with choice of standard or debug endpoint
+        /// </summary>
+        /// <param name="account">your account name</param>
+        /// <param name="secret">your secret key</param>
+        /// <param name="debug">use debug endpoint?</param>
+        public Client(string account, string secret, Boolean debug)
         {
             this.account = account;
             this.secret = secret;
+            this.debug = debug;
             Init();
         }
+
 
         /// <summary>
         /// Initializes an OAuth session object which will be reused for all
@@ -259,7 +276,10 @@ namespace Sugestio
         /// <returns></returns>
         private string GetUrl(string resource)
         {
-            return baseUrl + account + resource;
+            if (!debug)
+                return baseUrl + account + resource;
+            else
+                return debugUrl + account + resource;
         } 
 
     }
