@@ -35,7 +35,16 @@ namespace Sugestio
 {
     [XmlRoot("consumption")]
     public class Consumption : ISugestioObject
-    {       
+    {
+
+        private string id = null;
+        [XmlElement("id")]
+        public string Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+
         private string userId = null;
         [XmlElement("userid")]
         public string UserId
@@ -76,6 +85,22 @@ namespace Sugestio
             set { date = value; }
         }
 
+        private string location_simple = null;
+        [XmlElement("location_simple")]
+        public string Location_simple
+        {
+            get { return location_simple; }
+            set { location_simple = value; }
+        }
+
+        private string location_latlong = null;
+        [XmlElement("location_latlong")]
+        public string Location_latlong
+        {
+            get { return location_latlong; }
+            set { location_latlong = value; }
+        }
+
         public Consumption()
         {
         }
@@ -96,7 +121,7 @@ namespace Sugestio
 
         public string GetResource()
         {
-            return "/consumptions";
+            return "/consumptions.xml";
         }
         
         public IDictionary ToDictionary()
