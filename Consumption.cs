@@ -31,7 +31,7 @@ using System.Text;
 
 namespace Sugestio
 {
-    [XmlRoot("consumption")]
+    [XmlType("consumption")] 
     public class Consumption : ISugestioObject
     {
 
@@ -120,6 +120,11 @@ namespace Sugestio
         public string GetResource()
         {
             return "/consumptions.xml";
+        }
+
+        public string getRootName()
+        {
+            return "consumptions";
         }
         
     }

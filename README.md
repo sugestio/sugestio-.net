@@ -2,7 +2,8 @@
 
 This is a .NET library for interfacing with the [Sugestio](http://www.sugestio.com) 
 recommendation service. Data is submitted as XML. The library uses 
-[DevDefined.OAuth](http://github.com/bittercoder/DevDefined.OAuth) to create the OAuth-signed requests. Written in C# for .NET Framework 3.5.
+[DevDefined.OAuth](http://github.com/bittercoder/DevDefined.OAuth) to create the OAuth-signed requests. 
+Written in C# for .NET Framework 3.5.
 
 ## About Sugestio
 
@@ -34,8 +35,9 @@ The following [API](http://www.sugestio.com/documentation) features are implemen
 
 * get personalized recommendations for a given user
 * get items that are similar to a given item
-* submit user activity (consumptions): clicks, purchases, ratings, ...
-* submit item metadata: description, location, tags, categories, ...
+* (bulk) submit user activity (consumptions): clicks, purchases, ratings, ...
+* (bulk) submit item metadata: description, location, tags, categories, ...
+* (bulk) submit user metadata: location, gender, birthday, ...
 
 ### Requirements
 
@@ -56,9 +58,9 @@ The following example gets personal recommendations for user 1:
 	static void GetRecommendations()
 	{
 		Client client = new Client("sandbox", "demo"); // account, secret
-        List<Recommendation> recommendations = client.GetRecommendations("1");
-        Console.WriteLine("Call complete, " + recommendations.Count + " recommendations.");
-        recommendations.ForEach(Print);
+		List<Recommendation> recommendations = client.GetRecommendations("1");
+		Console.WriteLine("Call complete, " + recommendations.Count + " recommendations.");
+		recommendations.ForEach(Print);
 	}
 
 	static void Print(Recommendation r)
@@ -84,13 +86,40 @@ having Sugestio auto-generate a UUID identifier for us.
 	using Sugestio;
 
 	static void AddConsumption()
-    {
+	{
 		Client client = new Client("sandbox", "demo", true); // account, secret, use debug endpoint
-        Consumption consumption = new Consumption("123", "ABCD"); // userid and itemid are required
-        consumption.Id = "X"; // optional, a UUID will be assigned if not set manually
-        int response = client.Add(consumption);
-        Console.WriteLine("Call complete, status code: " + response);
-    }
+		
+		Consumption consumption = new Consumption("123", "ABCD"); // userid and itemid are required
+		consumption.Id = "X"; // optional, a UUID will be assigned if not set manually
+		
+		int response = client.Add(consumption);
+		Console.WriteLine("Call complete, status code: " + response);
+	}
+
+### Response
+
+	Call complete, status code: 202
+
+This next example submits multiple consumptions in bulk.
+
+### Code
+
+	using Sugestio;
+
+	static BulkAddConsumptions()
+	{
+		Client client = new Client("sandbox", "demo", true);
+		List<Consumption> consumptions = new List<Consumption>();
+		
+		Consumption c1 = new Consumption("1", "A");
+		consumptions.Add(c1);
+		
+		Consumption c2 = new Consumption("2", "B");            
+		consumptions.Add(c2);            
+		
+		int response = client.Add(consumptions);            
+		Console.WriteLine("Call complete, status code: " + response);
+	}
 
 ### Response
 
@@ -105,16 +134,39 @@ non-scalar (category, creator) attributes.
 	using Sugestio;
 
 	static void AddItem()
-    {
+	{
 		Client client = new Client("sandbox", "demo", true); // account, secret, use debug endpoint
-        Item item = new Item("X"); // itemid is required
-        item.Title = "Item X";            
-        item.Categories.Add("Category A");
-        item.Categories.Add("Category B");
-        item.Creators.Add("Artist A");
-        int response = client.Add(item);
-        Console.WriteLine("Call complete, status code: " + response);
-    }
+		
+		Item item = new Item("X"); // itemid is required
+		item.Title = "Item X";            
+		item.Categories.Add("Category A");
+		item.Categories.Add("Category B");
+		item.Creators.Add("Artist A");
+		
+		int response = client.Add(item);
+		Console.WriteLine("Call complete, status code: " + response);
+	}
+
+### Response
+
+	Call complete, status code: 202
+
+## Submitting user metadata
+This example illustrates how to submit user metadata.
+
+### Code
+
+	static void AddUser()
+	{
+		Client client = new Client("sandbox", "demo", true);
+
+		User user = new User("X");
+		user.Gender = "M";
+		user.Birthday = "1960-07-26";
+		int response = client.Add(user);
+
+		Console.WriteLine("Call complete, status code: " + response);
+	}
 
 ### Response
 

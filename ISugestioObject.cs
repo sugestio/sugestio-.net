@@ -34,5 +34,6 @@ namespace Sugestio
     public interface ISugestioObject
     {        
         string GetResource();
+        string getRootName();
     }
 }

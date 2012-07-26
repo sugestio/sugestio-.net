@@ -133,21 +133,75 @@ namespace Sugestio
         /// <returns>HTTP status code</returns>
         public int Add(ISugestioObject sugestioObject)
         {
-            string url = GetUrl(sugestioObject.GetResource());
-            var request = session.Request().Post().ForUrl(url);            
             //send data as XML using foretagsplatsen's fork (see OAuthRestClient.cs)
-            var serializer = new XmlSerializer(sugestioObject.GetType());
-            var sw = new System.IO.StringWriter();                
-            serializer.Serialize(sw, sugestioObject);
-            string body = sw.ToString();
+            string url = GetUrl(sugestioObject.GetResource());
+            string body = getBody(sugestioObject);
+            //Console.WriteLine(body);
+            return Post(url, body);
+        }
+
+        /// <summary>
+        /// Bulk add consumptions
+        /// </summary>
+        /// <param name="consumptions">the consumptions to add</param>
+        /// <returns>HTTP status code</returns>
+        public int Add(List<Consumption> consumptions)            
+        {
+            return AddGeneric(consumptions);            
+        }
+
+        /// <summary>
+        /// Bulk add items
+        /// </summary>
+        /// <param name="items">the items to add</param>
+        /// <returns>HTTP status code</returns>
+        public int Add(List<Item> items)
+        {
+            return AddGeneric(items);
+        }
+
+        /// <summary>
+        /// Bulk add users
+        /// </summary>
+        /// <param name="users">the users to add</param>
+        /// <returns>HTTP status code</returns>
+        public int Add(List<User> users)
+        {
+            return AddGeneric(users);
+        }
+
+        private int AddGeneric<T>(List<T> sugestioObjects)
+            where T : ISugestioObject
+        {
+            if (sugestioObjects == null || sugestioObjects.Count == 0)
+            {
+                return 400;
+            }
             
-            request.AlterContext(context => context.UseQueryParametersForOAuth = true);
-            request.AlterHttpWebRequest(httpRequest => httpRequest.ContentType = "text/xml");
-            request.ConsumerContext.EncodeRequestBody = false;
-            request.WithBody(body);
-            //Console.WriteLine(body);                                                          
-            return Post(request);
-        }        
+            //send data as XML using foretagsplatsen's fork (see OAuthRestClient.cs)
+            string url = GetUrl(sugestioObjects.ElementAt(0).GetResource());
+            string rootName = sugestioObjects.ElementAt(0).getRootName();
+            string body = getBody(sugestioObjects, rootName);
+            //Console.WriteLine(body);
+            return Post(url, body);
+        }
+
+        private string getBody(ISugestioObject sugestioObject)
+        {
+            var serializer = new XmlSerializer(sugestioObject.GetType());
+            var sw = new System.IO.StringWriter();
+            serializer.Serialize(sw, sugestioObject);
+            return sw.ToString();
+        }
+
+        private string getBody<T>(List<T> sugestioObjects, string rootName) where T : ISugestioObject
+        {
+            var sw = new System.IO.StringWriter();            
+            var root = new XmlRootAttribute(rootName);
+            var serializer = new XmlSerializer(sugestioObjects.GetType(), root);
+            serializer.Serialize(sw, sugestioObjects);
+            return sw.ToString();
+        }
 
         /// <summary>
         /// Performs a GET request for recommendations or similar items and
@@ -206,12 +260,18 @@ namespace Sugestio
         /// 401: Unauthorized
         /// 500: Internal Server Error
         /// </summary>
-        /// <param name="request">the request</param>
+        /// <param name="url">the url</param>
+        /// <param name="body">the post body</param>
         /// <returns>HTTP Status Code</returns>
-        private int Post(IConsumerRequest request)
+        private int Post(string url, string body)
         {
             try
             {
+                var request = session.Request().Post().ForUrl(url);
+                request.AlterContext(context => context.UseQueryParametersForOAuth = true);
+                request.AlterHttpWebRequest(httpRequest => httpRequest.ContentType = "text/xml");
+                request.ConsumerContext.EncodeRequestBody = false;
+                request.WithBody(body);
                 HttpWebResponse response = (HttpWebResponse)request.ToWebResponse();
                 return Convert.ToInt32(response.StatusCode);
             }

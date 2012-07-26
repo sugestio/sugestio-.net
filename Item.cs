@@ -32,7 +32,7 @@ using System.Text;
 
 namespace Sugestio
 {
-    [XmlRoot("item")]
+    [XmlType("item")]
     public class Item : ISugestioObject
     {
 
@@ -176,6 +176,11 @@ namespace Sugestio
         public string GetResource()
         {
             return "/items.xml";
+        }
+
+        public string getRootName()
+        {
+            return "items";
         }
     }
 }

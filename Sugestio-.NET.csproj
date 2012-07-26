@@ -46,6 +46,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="User.cs" />
     <Compile Include="Consumption.cs" />
     <Compile Include="ISugestioObject.cs" />
     <Compile Include="Item.cs" />
