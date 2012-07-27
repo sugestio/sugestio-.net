@@ -37,6 +37,8 @@ using System.Xml.Serialization;
 using DevDefined.OAuth;
 using DevDefined.OAuth.Consumer;
 using DevDefined.OAuth.Framework;
+using System.Xml;
+using System.IO;
 
 namespace Sugestio
 {
@@ -225,32 +227,8 @@ namespace Sugestio
                 url = GetUrl("/items/" + id + "/similar.xml");
             }
 
-            var request = session.Request().Get().ForUrl(url);
-
-            XDocument loaded = Get(request);
-
-            if (loaded != null)
-            {
-                var data = from item in loaded.Descendants("recommendation")
-                           select new Recommendation
-                           {
-                               ItemId = (string)item.Element("itemid") ?? null,
-                               Score = Convert.ToDouble((string)item.Element("score") ?? "0.0"),
-                               Algorithm = (string)item.Element("algorithm").Value ?? "",
-                               Certainty = Convert.ToDouble((string)item.Element("certainty") ?? "0.0")
-                           };
-
-                foreach (var r in data)
-                {
-                    if (r.ItemId != null)
-                    {
-                        recommendations.Add(r);
-                    }
-                }
-            }
-
-            return recommendations;
-
+            var request = session.Request().Get().ForUrl(url);            
+            return parseRecommendedItems(Get(request));
         }
 
         /// <summary>
@@ -291,17 +269,42 @@ namespace Sugestio
         }
 
         /// <summary>
-        /// Performs the GET request and returns the XDocument from the response body.
+        /// Parses a response body and returns a list of recommendations. An empty list is returned if there was an error.
+        /// </summary>
+        /// <param name="body">the response body</param>
+        /// <returns>list of recommendations</returns>
+        private List<Recommendation> parseRecommendedItems(string body)
+        {
+            if (body == null)
+                return new List<Recommendation>();
+
+            try
+            {
+                XmlReader reader = XmlReader.Create(new StringReader(body));
+                XmlRootAttribute root = new XmlRootAttribute("recommendations");
+                var serializer = new XmlSerializer(typeof(List<Recommendation>), root);
+                return (List<Recommendation>)serializer.Deserialize(reader); 
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return new List<Recommendation>();
+            }
+                          
+        }
+
+        /// <summary>
+        /// Performs the GET request and returns the response body.
         /// If there was a problem (HTTP Status Code >= 400), null is returned.
         /// </summary>
-        /// <param name="request">the request</param>
-        /// <returns>XDocument from response body or null</returns>
-        private XDocument Get(IConsumerRequest request)
+        /// <param name="request">the response body</param>
+        /// <returns>list of recommendations</returns>
+        private string Get(IConsumerRequest request)
         {
 
             try
             {
-                return request.ToDocument();
+                return request.ToString();                
             }
             catch (OAuthException ex)
             {

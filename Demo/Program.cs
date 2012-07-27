@@ -53,7 +53,7 @@ namespace Demo
         /// <param name="recommendation">the recommendation</param>
         static void Print(Recommendation recommendation)
         {
-            Console.WriteLine("Item " + recommendation.ItemId);
+            Console.WriteLine(recommendation.Item.Title);
         }
 
         /// <summary>

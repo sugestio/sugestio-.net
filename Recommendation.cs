@@ -28,13 +28,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace Sugestio
 {
+    [XmlType("recommendation")]    
     public class Recommendation
     {
         private string itemId;
-
+        [XmlElement("itemid")]
         public string ItemId
         {
             get { return itemId; }
@@ -42,25 +44,35 @@ namespace Sugestio
         }
 
         private double score;
-
+        [XmlElement("score")]
         public double Score
         {
             get { return score; }
             set { score = value; }
         }
-        private double certainty;
 
+        private double certainty;
+        [XmlElement("certainty")]
         public double Certainty
         {
             get { return certainty; }
             set { certainty = value; }
         }
-        private string algorithm;
 
+        private string algorithm;
+        [XmlElement("algorithm")]
         public string Algorithm
         {
             get { return algorithm; }
             set { algorithm = value; }
+        }
+
+        private Item item;
+        [XmlElement("item")]
+        public Item Item
+        {
+            get { return item; }
+            set { item = value; }
         }
 
         public Recommendation()
